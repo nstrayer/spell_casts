@@ -1,0 +1,9 @@
+{
+    "path" : "~/fast_drive/spell_casts",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

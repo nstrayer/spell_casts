@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1514695896818.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "17F41377",
+    "lastKnownWriteTime" : 1514851197,
+    "last_content_update" : 1514851197609,
+    "path" : "/media/nick/ssd/spell_casts/fit_model.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "75,0",
+        "scrollLine" : "59",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
