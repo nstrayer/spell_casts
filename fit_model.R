@@ -1,33 +1,43 @@
 library(tidyverse)
 library(keras)
  
-spell_data <- read.csv( 'spell_data.csv', stringsAsFactors = F)
+spell_data <- read.csv( 'spell_data.csv', stringsAsFactors = F) %>% 
+  filter(label != 'Expeliarmus')
+unique_spells <- unique(spell_data$label)
 
-spell_data  %>% 
-  ggplot(aes(x = time, y= accel, color = direction)) +
-  geom_line() + 
-  facet_wrap(~id) +
-  theme_void()
-  
-gestures_vecs <- spell_data %>% 
-  spread(direction, accel) %>%
-  group_by(id,spell) %>% 
+wide_data <- spell_data %>% 
+  spread(direction, accel)
+
+gestures_vecs <- wide_data %>% 
+  group_by(label, recording_num) %>% 
   do(
-    data = .[c('x','y','z')] %>% as.matrix()
+    data = .[c('m_x','m_y','m_z')] %>% 
+      as.matrix()
   )
 
-unique_spells <- unique(gestures_vecs$spell)
 
 X <- gestures_vecs$data %>% 
   pad_sequences()
 
-y <- gestures_vecs$spell %>% 
-  map_int(~(which(unique_spells==.))) %>% 
-  to_categorical() %>% 
-  .[,-1] #gets rid of the zero column left over from python stuffs
+y <- wide_data %>% 
+  group_by(label, recording_num) %>% 
+  summarise(
+    spell = first(label)
+  ) %>% {
+    map_int(.$spell, ~(which(unique_spells==.)))
+  } %>% {
+    . - 1
+  } %>% 
+  to_categorical() 
 
-dim(X)
-dim(y)
+num_obs <- dim(y)[1]
+
+# shuffle data so that keras pulls off a good validation set. 
+shuffled_indices <- 1:num_obs %>% sample()
+
+X <- X[shuffled_indices, , ]
+y <- y[shuffled_indices, ]
+
 
 filters <- 15
 kernel_size <- 10
@@ -70,8 +80,9 @@ model %>% compile(
 model %>%
   fit(
     X, y,
-    epochs = 250,
+    epochs = 100,
     validation_split = 0.35
   )
 
-model %>% save_model_hdf5('spell_model.h5')
+model %>% save_model_hdf5('cast_spells/spell_model.h5')
+unique_spells %>% saveRDS('cast_spells/spell_list.rds')

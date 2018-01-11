@@ -1,0 +1,12 @@
+name: cast_spells
+title: cast_spells
+username:
+account: nstrayer
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 255177
+bundleId: 1172612
+url: https://nstrayer.shinyapps.io/cast_spells/
+when: 1515709213.66523
+asMultiple: FALSE
+asStatic: FALSE
